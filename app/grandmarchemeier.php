@@ -1,0 +1,296 @@
+<?php
+ini_set('display_errors',1);
+ini_set('display_startup_erros',1);
+error_reporting(E_ALL);
+header('Content-Type: text/html; charset=utf-8');
+
+$today = date('Y-m-d');
+$dataFormat = date('d.m.Y');
+
+
+//PRODUTOS
+  
+try{
+	##FIREBIRD
+	$con1 = new PDO('firebird:dbname=multiofertasmeier.ddns.com.br/3050:/SDSuper/Dados/SDSuper.fdb', 'CONSULTORIA', 'CONSULTA321');
+	$con1->query("SET CHARACTER SET utf8");
+	$sql_stmt2 = $con1->prepare("SELECT WIDPRODUTO, WNOMEGONDOLA, WDATAULTIMAALTERACAO,
+	WCODIGOPRINCIPAL, WIDSECAO, WIDUNIDADE FROM PRODUTOS  WHERE WDATAULTIMAALTERACAO >= '$dataFormat'");
+	
+	//INNER JOIN produtosgrupos ON produtos.WIDPRODUTOGRUPO = produtosgrupos.widprodutogrupo"
+   // WHERE WDATAULTIMAALTERACAO >= '$dataFormat'");
+
+	
+   $sql_stmt2->execute();
+
+   while ($row = $sql_stmt2->fetch())
+   {
+	$id = $row[0];
+	$codigo = $row[3];
+	$descricao = $row[1];
+	$dataalteracao = $row[2];
+	$sku = $row[3];
+	$idgrupo= $row[4];
+
+	if($row[4] == '1'){$idgrupo = 'GERAL';}
+	if($row[4] == '12'){$idgrupo = 'HORTIFRUTI';}
+	if($row[4] == '22'){$idgrupo = 'MERCEARIA';}
+	if($row[4] == '32'){$idgrupo = 'LIMPEZA E UTILIDADES';}
+	if($row[4] == '42'){$idgrupo = 'PERFUMARIA';}
+	if($row[4] == '52'){$idgrupo = 'ACOUGUE';}
+	if($row[4] == '62'){$idgrupo = 'BEBIDAS E SUCOS';}
+	if($row[4] == '72'){$idgrupo = 'LATICINIOS';}
+	if($row[4] == '82'){$idgrupo = 'CEREAIS';}
+	if($row[4] == '92'){$idgrupo = 'BISCOITO';}
+	if($row[4] == '102'){$idgrupo = 'BEBIDAS ALCOOLICAS';}
+	if($row[4] == '112'){$idgrupo = 'PADARIA';}
+	if($row[4] == '122'){$idgrupo = 'MASSAS';}
+	if($row[4] == '132'){$idgrupo = 'PRODUTOS PADARIA FABRICO';}
+	if($row[4] == '142'){$idgrupo = 'FRIOS';}
+	if($row[4] == '152'){$idgrupo = 'CONGELADOS';}
+	if($row[4] == '161'){$idgrupo = 'MAQUINARIOS';}
+	
+	$proporcao= $row[5];
+   
+	if($row[5] == '1'){$proporcao = 'CAIXA';}
+	if($row[5] == '2'){$proporcao = 'COPO';}
+	if($row[5] == '3'){$proporcao = 'DUZIA';}
+	if($row[5] == '4'){$proporcao = 'KILOGRAMA';}
+	if($row[5] == '5'){$proporcao = 'LITRO';}
+	if($row[5] == '6'){$proporcao = 'METRO';}
+	if($row[5] == '7'){$proporcao = 'POTE';}
+	if($row[5] == '8'){$proporcao = 'UNIDADE';}
+	if($row[5] == '9'){$proporcao = 'VIDRO';}
+	if($row[5] == '10'){$proporcao = 'GRAMA';}
+	if($row[5] == '12'){$proporcao = 'KG';}
+	if($row[5] == '22'){$proporcao = 'ML';}
+	if($row[5] == '32'){$proporcao = 'L';}
+	if($row[5] == '42'){$proporcao = 'G';}
+	if($row[5] == '52'){$proporcao = 'BNDJ';}
+	if($row[5] == '20'){$proporcao = 'CENTIMETRO';}
+	if($row[5] == '64'){$proporcao = 'PECA';}
+
+
+	##MYSQL
+	$con2 = new PDO('mysql:host=cartazfacilpro.ctj8bnjcqdvd.us-east-2.rds.amazonaws.com;dbname=grandmarchemeier','cartazdb', 'tbCJShR2');
+	$con2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+	$query2 = $con2->query("SELECT count(*) as quantidade from `cf_produto` WHERE `prod_id`='$id'");
+	$rows = $query2->fetchAll(PDO::FETCH_OBJ);
+	
+	foreach($rows as $r => $value) {
+		$quantidadeProd =  $value->quantidade;
+	}
+
+
+	   if ($quantidadeProd < 1) {
+		echo "Produto Inserido:".$id;
+		echo '<br>';
+		$insert = $con2->prepare('INSERT INTO cf_produto (prod_id, prod_cod,prod_nome,prod_sessao,prod_empresa,prod_filial,prod_sku,prod_proporcao,prod_desc,prod_revisao,prod_flag100g) 
+		VALUES(:prod_id,:prod_cod,:prod_nome,:prod_sessao,:prod_empresa,:prod_filial,:prod_sku,:prod_proporcao,:prod_desc,:prod_revisao,:prod_flag100g)');
+		$insert->execute(array(
+		  ':prod_id' =>  $id,
+		  ':prod_cod' =>  $codigo,
+		  ':prod_nome' => $descricao,
+		  ':prod_sessao' => $idgrupo,
+		  ':prod_empresa' => '1',
+		  ':prod_filial' => '1',
+		  ':prod_sku' => $sku,
+		  ':prod_proporcao' => $proporcao,
+		  ':prod_desc' => $descricao,
+		  ':prod_revisao' => '0',
+		  ':prod_flag100g' => '0',
+		  
+		));
+
+	   }
+
+	   $con1 = null;
+	   $con2 = null;	
+}
+
+
+}
+catch(Exception $e){
+	echo $e;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	//VALORES
+	try{
+		##FIREBIRD
+		$con1 = new PDO('firebird:dbname=multiofertasmeier.ddns.com.br/3050:/SDSuper/Dados/SDSuper.fdb', 'CONSULTORIA', 'CONSULTA321');
+		$con1->query("SET CHARACTER SET utf8");
+		$sql_stmt2 = $con1->prepare("SELECT WIDFILIAL, WIDPRODUTO, WPRECO FROM PRECOSVENDA WHERE WIDFILIAL = 4 AND WDATAALTERACAO >= '$dataFormat'");
+		// WHERE WDATAALTERACAO >= '$dataFormat'"
+	   $sql_stmt2->execute();
+	     
+	     ##MYSQL
+
+	   while ($row = $sql_stmt2->fetch())
+	   {
+		$filial = $row[0];
+		 $idproduto = $row[1];
+	
+		$valor3 = $row[2];
+		$valor2 = number_format($valor3, 2, '.', '');
+		$valor = str_replace('.',',',$valor2);   
+		
+		$con2 = new PDO('mysql:host=cartazfacilpro.ctj8bnjcqdvd.us-east-2.rds.amazonaws.com;dbname=grandmarchemeier','cartazdb', 'tbCJShR2');
+		$con2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+
+		
+		$query2 = $con2->query("SELECT count(*) as quantidade ,vlr_produto from `cf_valor` WHERE `vlr_produto`='$idproduto' AND `vlr_filial`='$filial'");
+		$rows = $query2->fetchAll(PDO::FETCH_OBJ);
+		
+		foreach($rows as $r => $value) {
+			$quantidade =  $value->quantidade;
+		}
+
+    	   if ($quantidade > 0) {	
+			echo '<br>';
+			echo "Valor Atualizado:".$idproduto."-".$valor;
+			echo '<br>';		
+				$insert = $con2->prepare('UPDATE cf_valor SET vlr_valores = :vlr_valores, vlr_data_de = :vlr_data_de, vlr_data_ate = :vlr_data_ate, vlr_hora = :vlr_hora WHERE `vlr_produto`= :vlr_produto AND `vlr_filial`= :vlr_filial');
+     			$insert->execute(array(
+				':vlr_produto' =>  $idproduto,
+				':vlr_filial' => $filial,
+				':vlr_valores' => $valor,
+				':vlr_data_de' => $today,
+				':vlr_data_ate' => $today,
+				':vlr_hora' => '06:12'
+				));		  
+		
+		    }else{		
+				echo "Valor Cadastrado:".$idproduto."-".$valor;	
+				echo '<br>';	
+				$insert = $con2->prepare('INSERT INTO cf_valor (vlr_produto,vlr_filial,vlr_empresa,vlr_valores,vlr_idcomercial,vlr_data_de,vlr_data_ate,vlr_usuario,vlr_hora) 
+				VALUES(:vlr_produto,:vlr_filial,:vlr_empresa,:vlr_valores,:vlr_idcomercial,:vlr_data_de,:vlr_data_ate,:vlr_usuario,:vlr_hora)');
+				$insert->execute(array(
+				':vlr_produto' =>  $idproduto,
+				':vlr_filial' => $filial,
+				':vlr_empresa' => '1',
+				':vlr_valores' => $valor,
+				':vlr_idcomercial' => '1',
+				':vlr_data_de' => $today,
+				':vlr_data_ate' => $today,
+				':vlr_usuario' => '1',
+				':vlr_hora' => '06:12'
+				));		  				
+		   }
+		   
+	
+		$con1 = null;
+		$con2 = null;	
+		}
+	}
+	catch(Exception $e){}
+	
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
+// VALORES E PROMOCOES
+
+
+try{
+	##FIREBIRD
+	$con1 = new PDO('firebird:dbname=multiofertasmeier.ddns.com.br/3050:/SDSuper/Dados/SDSuper.fdb', 'CONSULTORIA', 'CONSULTA321');
+	$con1->query("SET CHARACTER SET utf8");
+	$sql_stmt2 = $con1->prepare("SELECT WFILIAIS,WPRECOPROMOCAO,WDATAINICIO,
+	WDATATERMINO,ANTPRODUTOS.WORDEMPDVPRODUTO, CODIGOSPRO.widproduto, PRECOSVENDA.WPRECO FROM ANTPRODUTOS
+	INNER JOIN CODIGOSPRO ON ANTPRODUTOS.WIDPRODUTO = CODIGOSPRO.wordempdvproduto 
+	INNER JOIN PRECOSVENDA ON CODIGOSPRO.widproduto = PRECOSVENDA.WIDPRODUTO WHERE ANTPRODUTOS.WDATAINICIO >= '$dataFormat'");
+
+
+   $sql_stmt2->execute();
+	 
+	 ##MYSQL
+
+   while ($row = $sql_stmt2->fetch())
+   {
+	$filial = '4';
+	$valor3 = $row[1];
+	$valor2 = number_format($valor3, 2, '.', '');
+	$valor = str_replace('.',',',$valor2);   
+	
+	$preco_antigo3 = $row[6];
+	$preco_antigo2 = number_format($preco_antigo3, 2, '.', '');
+	$preco_antigo = str_replace('.',',',$preco_antigo2);  
+
+	$dataInicio = $row[2];
+	$dataFim = $row[3];
+	$idproduto = $row[5];
+
+
+	$valor_completo = $preco_antigo."!@#".$valor;
+
+	$con2 = new PDO('mysql:host=cartazfacilpro.ctj8bnjcqdvd.us-east-2.rds.amazonaws.com;dbname=grandmarchemeier','cartazdb', 'tbCJShR2');
+	$con2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+	$query2 = $con2->query("SELECT count(*) as quantidade ,vlr_produto from `cf_valor` WHERE `vlr_produto`='$idproduto' AND `vlr_filial`='$filial'");
+	$rows = $query2->fetchAll(PDO::FETCH_OBJ);
+	
+	foreach($rows as $r => $value) {
+		$quantidade =  $value->quantidade;
+	}
+
+	   if ($quantidade > 0) {	
+		echo '<br>';
+		echo "Valor PROMOCIONAL Atualizado:".$idproduto."-".$valor_completo;
+		echo '<br>';		
+			$insert = $con2->prepare('UPDATE cf_valor SET vlr_valores = :vlr_valores, vlr_data_de = :vlr_data_de, vlr_data_ate = :vlr_data_ate,vlr_idcomercial = :vlr_idcomercial,  vlr_hora = :vlr_hora WHERE `vlr_produto`= :vlr_produto AND `vlr_filial`= :vlr_filial');
+			 $insert->execute(array(
+			':vlr_produto' =>  $idproduto,
+			':vlr_filial' => $filial,
+			':vlr_valores' => $valor_completo,
+			':vlr_data_de' => $dataInicio,
+			':vlr_data_ate' => $dataFim,
+			':vlr_idcomercial' => '2',
+			':vlr_hora' => '06:06'
+			));		  
+	
+		}else{		
+			echo "Valor PROMOCIONAL Cadastrado:".$idproduto."-".$valor_completo;	
+			echo '<br>';	
+			$insert = $con2->prepare('INSERT INTO cf_valor (vlr_produto,vlr_filial,vlr_empresa,vlr_valores,vlr_idcomercial,vlr_data_de,vlr_data_ate,vlr_usuario,vlr_hora) 
+			VALUES(:vlr_produto,:vlr_filial,:vlr_empresa,:vlr_valores,:vlr_idcomercial,:vlr_data_de,:vlr_data_ate,:vlr_usuario,:vlr_hora)');
+			$insert->execute(array(
+			':vlr_produto' =>  $idproduto,
+			':vlr_filial' => $filial,
+			':vlr_empresa' => '1',
+			':vlr_valores' => $valor_completo,
+			':vlr_idcomercial' => '2',
+			':vlr_data_de' => $dataInicio,
+			':vlr_data_ate' => $dataFim,
+			':vlr_usuario' => '1',
+			':vlr_hora' => '06:06'
+			));		  				
+	   }
+	   
+
+	$con1 = null;
+	$con2 = null;	
+	}
+
+	$con2 = new PDO('mysql:host=cartazfacilpro.ctj8bnjcqdvd.us-east-2.rds.amazonaws.com;dbname=grandmarchemeier','cartazdb', 'tbCJShR2');
+	$con2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+	$insert = $con2->prepare('INSERT INTO cf_logs (log_empresa,log_filial,log_usuario,log_data,log_mensagem)VALUES(:log_empresa,:log_filial,:log_usuario,:log_data,:log_mensagem)');
+	$insert->execute(array(
+	':log_empresa' =>  '55',
+	':log_filial' =>'55',
+	':log_usuario' => '55',
+	':log_data' =>  $today,
+	':log_mensagem' => 'IMPORTACAO DE VALORES e PRODUTOS REALIZADA',
+	));		
+
+	echo "Produtos e Valores Atualizados;";
+}catch(Exception $e){}
+
+
+
+
+
+?>
