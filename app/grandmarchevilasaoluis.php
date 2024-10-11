@@ -12,7 +12,7 @@ $dataFormat = date('d.m.Y');
 
 try {
 	##FIREBIRD
-	$con1 = new PDO('firebird:dbname=187.14.106.127/3050:/SDSuper/Dados/SDSuper.fdb', 'CONSULTORIA', 'CONSULTA321');
+	$con1 = new PDO('firebird:dbname=201.58.102.61/3050:/SDSuper/Dados/SDSuper.fdb', 'CONSULTORIA', 'CONSULTA321');
 	$con1->query("SET CHARACTER SET utf8");
 	$sql_stmt2 = $con1->prepare("SELECT WIDPRODUTO, WNOMEGONDOLA, WDATAULTIMAALTERACAO,
 	WCODIGOPRINCIPAL, WIDSECAO, WIDUNIDADE FROM PRODUTOS WHERE WDATAULTIMAALTERACAO >= '$dataFormat'");
@@ -112,7 +112,7 @@ try {
 //VALORES
 try {
 	##FIREBIRD
-	$con1 = new PDO('firebird:dbname=187.14.106.127/3050:/SDSuper/Dados/SDSuper.fdb', 'CONSULTORIA', 'CONSULTA321');
+	$con1 = new PDO('firebird:dbname=201.58.102.61/3050:/SDSuper/Dados/SDSuper.fdb', 'CONSULTORIA', 'CONSULTA321');
 	$con1->query("SET CHARACTER SET utf8");
 	$sql_stmt2 = $con1->prepare("SELECT WIDFILIAL, WIDPRODUTO, WPRECO FROM PRECOSVENDA WHERE WDATAALTERACAO >= '$dataFormat'");
 
@@ -122,8 +122,7 @@ try {
 	##MYSQL
 
 	while ($row = $sql_stmt2->fetch()) {
-		echo $filial = $row[0];
-		echo '<br>';
+		$filial = $row[0];
 		$idproduto = $row[1];
 
 		$valor3 = $row[2];
@@ -180,7 +179,7 @@ try {
 
 try {
 	##FIREBIRD
-	$con1 = new PDO('firebird:dbname=187.14.106.127/3050:/SDSuper/Dados/SDSuper.fdb', 'CONSULTORIA', 'CONSULTA321');
+	$con1 = new PDO('firebird:dbname=201.58.102.61/3050:/SDSuper/Dados/SDSuper.fdb', 'CONSULTORIA', 'CONSULTA321');
 	$con1->query("SET CHARACTER SET utf8");
 	$sql_stmt2 = $con1->prepare("SELECT WFILIAIS,WPRECOPROMOCAO,WDATAINICIO,
 	WDATATERMINO,ANTPRODUTOS.WORDEMPDVPRODUTO, CODIGOSPRO.widproduto, PRECOSVENDA.WPRECO FROM ANTPRODUTOS
