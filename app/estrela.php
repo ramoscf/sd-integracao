@@ -11,7 +11,7 @@ $dataFormat = date('d.m.Y');
 //PRODUTOS
 try {
 	##FIREBIRD
-	$con1 = new PDO('firebird:dbname=191.249.153.50:/SDSuper/Dados/SDSuper.fdb', 'CONSULTORIA', 'CONSULTA321');
+	$con1 = new PDO('firebird:dbname=177.10.170.143:/SDSuper/Dados/SDSuper.fdb', 'CONSULTORIA', 'CONSULTA321');
 	$con1->query("SET CHARACTER SET utf8");
 	$sql_stmt2 = $con1->prepare("SELECT WIDPRODUTO, WNOMEGONDOLA, WDATAULTIMAALTERACAO,
 	WCODIGOPRINCIPAL, produtosgrupos.wnomeprodutogrupo, WIDUNIDADE  FROM PRODUTOS
