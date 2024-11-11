@@ -1,0 +1,9 @@
+*/67 * * * * curl http://localhost:8002/estrela.php
+*/73 * * * * curl http://localhost:8002/grandmarchemeier.php
+*/77 * * * * curl http://localhost:8002/grandmarchevilasaoluis.php
+*/35 * * * * curl http://localhost:8002/riosulaustin.php
+*/75 * * * * curl http://localhost:8002/riosulmiguelpereira.php
+*/70 * * * * curl http://localhost:8002/riosulprimavera.php
+*/75 * * * * curl http://localhost:8002/riosulqueimados.php
+*/80 * * * * curl http://localhost:8002/riosulsaoluis.php
+*/75 * * * * curl http://localhost:8002/riosulvilanova.php
