@@ -12,7 +12,7 @@ $dataFormat = date('d.m.Y');
 
 try {
 	##FIREBIRD
-	$con1 = new PDO('firebird:dbname=espmatriz.ddns.com.br/3050/SDSuper/Dados/SDSuper.fdb', 'CONSULTORIA', 'CONSULTA321');
+	$con1 = new PDO('firebird:dbname=espmatriz.ddns.com.br/3050:/SDSuper/Dados/SDSuper.fdb', 'CONSULTORIA', 'CONSULTA321');
 	$con1->query("SET CHARACTER SET utf8");
 	$sql_stmt2 = $con1->prepare("SELECT WIDPRODUTO, WNOMEGONDOLA, WDATAULTIMAALTERACAO,
 	WCODIGOPRINCIPAL, WIDPRODUTOGRUPO, WIDUNIDADE  FROM PRODUTOS  WHERE WDATAULTIMAALTERACAO >= '$dataFormat'");
