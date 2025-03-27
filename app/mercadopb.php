@@ -70,7 +70,7 @@ try {
 		}
 
 		##MYSQL
-		$con2 = new PDO('mysql:host=cartazfacilpro.ctj8bnjcqdvd.us-east-2.rds.amazonaws.com;dbname=pioneiro', 'cartazdb', 'tbCJShR2');
+		$con2 = new PDO('mysql:host=cartazfacilpro.ctj8bnjcqdvd.us-east-2.rds.amazonaws.com;dbname=mercadopb', 'cartazdb', 'tbCJShR2');
 		$con2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 		$query2 = $con2->query("SELECT count(*) as quantidade from `cf_produto` WHERE `prod_id`='$id'");
@@ -117,7 +117,7 @@ try {
 	##FIREBIRD
 	$con1 = new PDO('firebird:dbname=200.150.194.245/3050:/SDSuper/Dados/SDSuper.fdb', 'CONSULTORIA', 'CONSULTA321');
 	$con1->query("SET CHARACTER SET utf8");
-	$sql_stmt2 = $con1->prepare("SELECT WIDFILIAL, WIDPRODUTO, WPRECO FROM PRECOSVENDA WHERE (PRECOSVENDA.WIDFILIAL = 1 OR PRECOSVENDA.WIDFILIAL = 3) AND WDATAALTERACAO >= '$dataFormat'");
+	$sql_stmt2 = $con1->prepare("SELECT WIDFILIAL, WIDPRODUTO, WPRECO FROM PRECOSVENDA WHERE PRECOSVENDA.WIDFILIAL = 5 AND WDATAALTERACAO >= '$dataFormat'");
 	// WHERE WDATAALTERACAO >= '$dataFormat'"
 	$sql_stmt2->execute();
 
@@ -131,7 +131,7 @@ try {
 		$valor2 = number_format($valor3, 2, '.', '');
 		$valor = str_replace('.', ',', $valor2);
 
-		$con2 = new PDO('mysql:host=cartazfacilpro.ctj8bnjcqdvd.us-east-2.rds.amazonaws.com;dbname=pioneiro', 'cartazdb', 'tbCJShR2');
+		$con2 = new PDO('mysql:host=cartazfacilpro.ctj8bnjcqdvd.us-east-2.rds.amazonaws.com;dbname=mercadopb', 'cartazdb', 'tbCJShR2');
 		$con2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 
@@ -216,7 +216,7 @@ try {
 
 		$valor_completo = $valor;
 
-		$con2 = new PDO('mysql:host=cartazfacilpro.ctj8bnjcqdvd.us-east-2.rds.amazonaws.com;dbname=pioneiro', 'cartazdb', 'tbCJShR2');
+		$con2 = new PDO('mysql:host=cartazfacilpro.ctj8bnjcqdvd.us-east-2.rds.amazonaws.com;dbname=mercadopb', 'cartazdb', 'tbCJShR2');
 		$con2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 		$query2 = $con2->query("SELECT count(*) as quantidade ,vlr_produto from `cf_valor` WHERE `vlr_produto`='$idproduto' AND `vlr_filial`='$filial'");
@@ -263,7 +263,7 @@ try {
 		$con2 = null;
 	}
 
-	$con2 = new PDO('mysql:host=cartazfacilpro.ctj8bnjcqdvd.us-east-2.rds.amazonaws.com;dbname=pioneiro', 'cartazdb', 'tbCJShR2');
+	$con2 = new PDO('mysql:host=cartazfacilpro.ctj8bnjcqdvd.us-east-2.rds.amazonaws.com;dbname=mercadopb', 'cartazdb', 'tbCJShR2');
 	$con2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 	$insert = $con2->prepare('INSERT INTO cf_logs (log_empresa,log_filial,log_usuario,log_data,log_mensagem)VALUES(:log_empresa,:log_filial,:log_usuario,:log_data,:log_mensagem)');
 	$insert->execute(array(
